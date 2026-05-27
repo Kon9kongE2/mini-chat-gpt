@@ -12,4 +12,4 @@
 
 ## Purpose
 
-`notebook_06.ipynb`에서 한국어 텍스트를 character-level GPT에 적용해 보기 위한 학습 데이터이다.
+`notebook_06.ipynb`에서 한국어 텍스트를 적용해 보기 위한 학습 데이터이다.
