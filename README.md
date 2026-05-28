@@ -1,4 +1,6 @@
-# Notebook 06; 한국어 텍스트 적용해보기
+# Notebook 06 한국어 텍스트 적용해보기
+
+mini chat gpt/notebooks/lucky_day_learning.ipynb
 
 notebook06에서 배운 GPT 기반 텍스트 생성 모델을 한국어 텍스트에 적용해보았습니다.
 기존 코드의 구조는 그대로 유지하였습니다.
