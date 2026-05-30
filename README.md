@@ -1,6 +1,6 @@
 # notebook06 정리
 
-## notebook01~06의 공통된 흐름 정리
+## 0. notebook01~06의 공통된 흐름 정리
 
 ![1](data/1.png)
 
