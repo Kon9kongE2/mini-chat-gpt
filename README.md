@@ -12,13 +12,17 @@
 ---
 ## 1. 데이터 준비
 
+```
 - 코드 실행에 필요한 패키지 불러오기
 - input.txt 파일 읽기
 - 읽어온 파일에서 텍스트의 중복된 것을 제외, 알파벳 순으로 정렬하여 리스트 형식으로 저장
 - 이를 바탕으로 stoi, itos 딕셔너리 생성; 이때 vocab_size는 문자의 종류를 나타냄
 - data는 text에 있는 모든 문자를 모두 숫자로 변환한 형태로 저장됨
+```
 
+```
 - NextTokenDataset 클래스 정의
 - dunder method __init__으로 dataset 생성시 필요한 값들을 저장하게 해줌
 - `len(self.data)- self.block_size`는 idx가 너무 뒤로 가면 y를 생성할 수 없으므로 학습 가능한 데이터를 이런 식으로 지정하였음
 - x는 지정한 idx ~ idx + block_size(문제지), y는 x의 양쪽 값에서 1씩 더한 값들의 집합(답지)이다.
+```
