@@ -416,7 +416,8 @@ def sample_gpt(model, block_size, stoi, itos, device, start_text="ROMEO:", max_n
 - 출력은 out을 하나로 모음
 ```
 
-
+---
+# 한국어 텍스트 적용해보기
 
 
 
