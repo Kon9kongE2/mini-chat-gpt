@@ -2,8 +2,6 @@
 
 ## 0. notebook01~06의 공통된 흐름 정리
 
-![1](data/1.png)
-
 ```
 1. 텍스트 데이터를 모델이 학습할 수 있는 형태로 바꾸기
 2. 다음 문자를 예측하는 모델 만들기
@@ -15,7 +13,23 @@
 
 ## 1. 데이터 준비
 
-![2](data/2.png)
+```python
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from torch.utils.data import Dataset, DataLoader
+from pathlib import Path
+
+if not Path("input.txt").exists():
+    !wget -q https://raw.githubusercontent.com/karpathy/char-rnn/master/data/tinyshakespeare/input.txt
+
+text = open("input.txt", "r", encoding="utf-8").read()
+chars = sorted(list(set(text)))
+stoi = {ch: i for i, ch in enumerate(chars)}
+itos = {i: ch for ch, i in stoi.items()}
+vocab_size = len(chars)
+data = torch.tensor([stoi[ch] for ch in text], dtype=torch.long)
+```
 
 ```
 - 코드 실행에 필요한 패키지 불러오기
@@ -25,7 +39,18 @@
 - data는 text에 있는 모든 문자를 모두 숫자로 변환한 형태로 저장됨
 ```
 
-![3](data/3.png)
+```python
+class NextTokenDataset(Dataset):
+    def __init__(self, data, block_size):
+        self.data = data
+        self.block_size = block_size
+    def __len__(self):
+        return len(self.data) - self.block_size
+    def __getitem__(self, idx):
+        x = self.data[idx : idx + self.block_size]
+        y = self.data[idx + 1 : idx + self.block_size + 1]
+        return x, y
+```
 
 ```
 ** NextTokenDataset 클래스 정의 **
