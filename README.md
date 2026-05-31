@@ -417,7 +417,9 @@ def sample_gpt(model, block_size, stoi, itos, device, start_text="ROMEO:", max_n
 ```
 
 ---
+
 # 한국어 텍스트 적용해보기
+
 ## 학습 데이터
 
 심훈의 소설 『상록수』 텍스트
@@ -429,6 +431,122 @@ def sample_gpt(model, block_size, stoi, itos, device, start_text="ROMEO:", max_n
 
 ---
 
+## 학습 손실 변화
 
+```python
+def sequence_cross_entropy(logits, targets):
+    return F.cross_entropy(logits.transpose(1, 2), targets)
+
+def train_one_epoch(model, loader, optimizer, device, max_steps=None):
+    model.train()
+    total_loss, total_count = 0.0, 0
+    for step, (xb, yb) in enumerate(loader):
+        xb, yb = xb.to(device), yb.to(device)
+        logits = model(xb)
+        loss = sequence_cross_entropy(logits, yb)
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+        total_loss += loss.item() * xb.size(0)
+        total_count += xb.size(0)
+        if max_steps is not None and step + 1 >= max_steps:
+            break
+    return total_loss / total_count
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+model = TinyGPT(vocab_size, block_size).to(device)
+optimizer = torch.optim.AdamW(model.parameters(), lr=3e-4)
+
+for epoch in range(50):
+    train_loss = train_one_epoch(model, loader, optimizer, device, max_steps=300)
+    print(f"epoch {epoch:2d} | train loss {train_loss:.4f}")
+```
+
+```text
+epoch  0 | train loss 4.3846
+epoch  1 | train loss 3.6311
+epoch  2 | train loss 3.3752
+epoch  3 | train loss 3.1881
+epoch  4 | train loss 3.0623
+epoch  5 | train loss 2.9515
+epoch  6 | train loss 2.8710
+epoch  7 | train loss 2.7969
+epoch  8 | train loss 2.7350
+epoch  9 | train loss 2.6797
+epoch 10 | train loss 2.6294
+epoch 11 | train loss 2.5816
+epoch 12 | train loss 2.5413
+epoch 13 | train loss 2.5040
+epoch 14 | train loss 2.4670
+epoch 15 | train loss 2.4323
+epoch 16 | train loss 2.3990
+epoch 17 | train loss 2.3716
+epoch 18 | train loss 2.3420
+epoch 19 | train loss 2.3126
+epoch 20 | train loss 2.2931
+epoch 21 | train loss 2.2671
+epoch 22 | train loss 2.2408
+epoch 23 | train loss 2.2198
+epoch 24 | train loss 2.1959
+epoch 25 | train loss 2.1819
+epoch 26 | train loss 2.1575
+epoch 27 | train loss 2.1335
+epoch 28 | train loss 2.1181
+epoch 29 | train loss 2.1014
+epoch 30 | train loss 2.0839
+epoch 31 | train loss 2.0684
+epoch 32 | train loss 2.0500
+epoch 33 | train loss 2.0303
+epoch 34 | train loss 2.0185
+epoch 35 | train loss 2.0046
+epoch 36 | train loss 1.9877
+epoch 37 | train loss 1.9747
+epoch 38 | train loss 1.9611
+epoch 39 | train loss 1.9476
+epoch 40 | train loss 1.9366
+epoch 41 | train loss 1.9256
+epoch 42 | train loss 1.9092
+epoch 43 | train loss 1.9015
+epoch 44 | train loss 1.8892
+epoch 45 | train loss 1.8779
+epoch 46 | train loss 1.8672
+epoch 47 | train loss 1.8551
+epoch 48 | train loss 1.8464
+epoch 49 | train loss 1.8356
+```
+
+---
+
+## 생성 결과
+
+```python
+@torch.no_grad()
+def sample_gpt(model, block_size, stoi, itos, device, start_text="상록수", max_new_tokens=400):
+    model.eval()
+    context = torch.zeros((1, block_size), dtype=torch.long, device=device)
+    for ch in start_text:
+        if ch in stoi:
+            ix = torch.tensor([[stoi[ch]]], device=device)
+            context = torch.cat([context[:, 1:], ix], dim=1)
+    out = list(start_text)
+    for _ in range(max_new_tokens):
+        logits = model(context)
+        logits = logits[:, -1, :]
+        probs = F.softmax(logits, dim=-1)
+        ix = torch.multinomial(probs, num_samples=1)
+        out.append(itos[ix.item()])
+        context = torch.cat([context[:, 1:], ix], dim=1)
+    return "".join(out)
+
+print(sample_gpt(model, block_size, stoi, itos, device, start_text="상록수", max_new_tokens=500))
+```
+
+```text
+상록수가?" 동혁의 고요히 묻는다. 동혁은,
+"안 들었습니다." 하고 명령이라는 말일세만 무어라고 비단 말이니 이 집의 산촌, 솜털 같은 눈에서 속아지 않고 생각에 잠겼다.
+"안녕히 인제는 떠날 때면 와서 기천이가 마주 끓는 것버텀 걸어오는 것까지 끝까지 다투는 대로 갈피를 생활한다. 그는 백씨는 며느리로 일을 몇십시다! 조선 같은 낫살이 부르짖고 숭늉병을 들고 나와서 얼굴을 다시다가,
+"난 그래야 돈은 한 다 안 되구 보기가 어렵어요?" 하고 제 것을 진지뿌렁거리고 양심에 소개를 불렀다. 저의 여간 지금의 진찰을 같이 멈추고 소개하는 흥분을 바라보고 말욱 심상한다. 한 목소리이 후련진 핑 아래로 영신의 앞으로 고개를 꼬느고 들어온다. 그는 푸숭지기와 같이 헛간에 이름을 뛰고 앉았던 눈치다. 동혁은 발딱 일어서며,
+"저 자 고만둬라구 해두 좋은 일이나 사정을 헐 것 없이 없네." 하고 막중을 벌린 것 같은 사실이었다. 기천이는 시골서 동혁이가 그 뒤로 나갔다. 그는 마누라지 말을 끄르고 
+```
 
 
