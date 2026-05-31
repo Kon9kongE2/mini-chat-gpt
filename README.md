@@ -418,7 +418,16 @@ def sample_gpt(model, block_size, stoi, itos, device, start_text="ROMEO:", max_n
 
 ---
 # 한국어 텍스트 적용해보기
+## 학습 데이터
 
+심훈의 소설 『상록수』 텍스트
+출처: 위키문헌(https://ko.wikisource.org/wiki/%EC%9C%84%ED%82%A4%EB%AC%B8%ED%97%8C:%EB%8C%80%EB%AC%B8)
+ 
+불필요한 공백, 과도한 줄바꿈, 다운로드 과정에서 섞인 특수기호를 정리
+다만 원문의 문체와 문장 구조는 최대한 유지  
+최종적으로 문자 단위 학습이 가능하도록 UTF-8 형식의 `.txt` 파일로 저장
+
+---
 
 
 
