@@ -517,6 +517,8 @@ epoch 48 | train loss 1.8464
 epoch 49 | train loss 1.8356
 ```
 
+loss가 지속적으로 감소하는 것을 볼 수 있다.
+
 ---
 
 ## 생성 결과
