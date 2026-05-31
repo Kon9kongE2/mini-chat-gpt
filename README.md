@@ -420,6 +420,8 @@ def sample_gpt(model, block_size, stoi, itos, device, start_text="ROMEO:", max_n
 
 # 한국어 텍스트 적용해보기
 
+preview 자꾸 오류가 떠서 여기다가 출력 결과를 정리했습니다.
+
 ## 학습 데이터
 
 심훈의 소설 『상록수』 텍스트
